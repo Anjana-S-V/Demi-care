@@ -1,35 +1,34 @@
-# Dependencies
+# =========================================================
+# DemiCare - Git Ignore
+# =========================================================
+
+# Node / React
 node_modules/
 frontend/node_modules/
-
-# Build output
 frontend/dist/
-
-# Environment variables
-.env
-.env.*
-!.env.example
+dist/
 
 # Python
 __pycache__/
 *.py[cod]
 .venv/
 venv/
+recognition/.venv/
 
-# Local development
-.vscode/
-*.log
+# Environment variables
+.env
+.env.*
+!.env.example
 
-# OS files
-.DS_Store
-Thumbs.db
-
-# Local/private test data
+# Local/private biometric test data
 data/people/*
 
-recognition/.venv/
-__pycache__/
-*.pyc
-node_modules/
-dist/
-.env
+# Logs
+*.log
+
+# IDE
+.vscode/
+
+# OS
+.DS_Store
+Thumbs.db
