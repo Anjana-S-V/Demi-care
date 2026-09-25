@@ -1,63 +1,712 @@
+
+/* =========================================================
+   DemiCare
+   Single-screen patient interface
+   ========================================================= */
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  font-family:
+    Inter,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+
+  background: #f5f7f6;
+  color: #24302c;
+
+  overflow: hidden;
+}
+
+/* =========================================================
+   APP
+   ========================================================= */
+
+.app {
+  width: 100%;
+  height: 100vh;
+
+  display: flex;
+  flex-direction: column;
+
+  overflow: hidden;
+}
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+.topbar {
+  height: 82px;
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 0 4vw;
+
+  background: #ffffff;
+  border-bottom: 1px solid #e3e9e6;
+}
+
+.topbar h1 {
+  margin: 0;
+
+  font-size: 30px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+}
+
+.topbar p {
+  margin: 3px 0 0;
+
+  font-size: 14px;
+  color: #718079;
+}
+
+.voice-status {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+
+  padding: 10px 15px;
+
+  border-radius: 20px;
+
+  background: #f1f6f3;
+
+  font-size: 13px;
+  font-weight: 600;
+
+  color: #486158;
+}
+
+/* =========================================================
+   STATUS DOT
+   ========================================================= */
+
+.status-dot {
+  width: 9px;
+  height: 9px;
+
+  display: inline-block;
+
+  border-radius: 50%;
+
+  background: #42a878;
+
+  flex-shrink: 0;
+}
+
+.status-dot.inactive {
+  background: #c1c9c5;
+}
+
+/* =========================================================
+   MAIN DASHBOARD
+   ========================================================= */
+
+.dashboard {
+  flex: 1;
+  min-height: 0;
+
+  width: 100%;
+
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+
+  gap: 24px;
+
+  padding: 24px 4vw;
+}
+
+/* =========================================================
+   SHARED SECTION
+   ========================================================= */
+
+.camera-section,
+.care-section {
+  min-width: 0;
+  min-height: 0;
+
+  display: flex;
+  flex-direction: column;
+
+  background: #ffffff;
+
+  border: 1px solid #e4eae7;
+  border-radius: 20px;
+
+  padding: 22px;
+
+  box-shadow:
+    0 4px 18px rgba(40, 60, 50, 0.05);
+}
+
+/* =========================================================
+   SECTION HEADING
+   ========================================================= */
+
+.section-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  margin-bottom: 16px;
+}
+
+.section-heading h2 {
+  margin: 0;
+
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.section-heading p {
+  margin: 4px 0 0;
+
+  font-size: 13px;
+  color: #7a8781;
+}
+
+.live-badge {
+  padding: 7px 11px;
+
+  border-radius: 14px;
+
+  background: #f4eeee;
+
+  color: #a85c5c;
+
+  font-size: 11px;
+  font-weight: 700;
+}
+
+/* =========================================================
+   CAMERA
+   ========================================================= */
+
 .camera-container {
   position: relative;
+
   width: 100%;
-  height: 310px;
-  border-radius: 14px;
+
+  flex: 1;
+  min-height: 0;
+
   overflow: hidden;
-  background: #18232d;
+
+  border-radius: 15px;
+
+  background: #202624;
 }
 
 .camera-video {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+
   display: block;
 
-  /* Mirror the front-facing webcam naturally */
+  object-fit: cover;
+
   transform: scaleX(-1);
 }
 
 .camera-overlay {
   position: absolute;
+
   inset: 0;
 
   display: flex;
   flex-direction: column;
+
   align-items: center;
   justify-content: center;
 
-  color: white;
   text-align: center;
-  background: #18232d;
+
+  background: #eef2f0;
 }
 
 .camera-icon {
-  font-size: 46px;
-  margin-bottom: 10px;
+  font-size: 38px;
+
+  margin-bottom: 8px;
 }
 
 .camera-overlay h3 {
   margin: 0;
-  font-size: 17px;
+
+  font-size: 16px;
 }
 
 .camera-overlay p {
-  margin: 6px 0 0;
-  color: #aeb9c2;
-  font-size: 12px;
+  margin: 5px 0 0;
+
+  color: #7b8782;
+
+  font-size: 13px;
 }
+
+/* =========================================================
+   CAMERA STATUS
+   ========================================================= */
 
 .camera-status {
   display: flex;
   align-items: center;
+
+  gap: 8px;
+
+  margin-top: 10px;
+
+  font-size: 12px;
+
+  color: #69766f;
+}
+
+/* =========================================================
+   PERSON CARD
+   ========================================================= */
+
+.person-card {
+  display: flex;
+  align-items: center;
+
+  gap: 13px;
+
+  margin-top: 12px;
+
+  padding: 13px 15px;
+
+  border-radius: 14px;
+
+  background: #f6f9f7;
+}
+
+.person-avatar {
+  width: 43px;
+  height: 43px;
+
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  background: #e4eee8;
+
+  font-size: 20px;
+}
+
+.person-info {
+  min-width: 0;
+}
+
+.recognized-label {
+  display: block;
+
+  margin-bottom: 2px;
+
+  color: #7c8983;
+
+  font-size: 10px;
+  font-weight: 700;
+
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.person-info h3 {
+  margin: 0;
+
+  font-size: 17px;
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.person-info p {
+  margin: 2px 0 0;
+
+  color: #6d7973;
+
+  font-size: 12px;
+}
+
+.person-info small {
+  display: block;
+
+  margin-top: 3px;
+
+  color: #89958f;
+
+  font-size: 10px;
+}
+
+/* =========================================================
+   CARE SECTION
+   ========================================================= */
+
+.care-section {
+  justify-content: flex-start;
+}
+
+.current-time {
+  font-size: 14px;
+  font-weight: 600;
+
+  color: #68766f;
+}
+
+/* =========================================================
+   REMINDER BUTTONS
+   ========================================================= */
+
+.reminder-buttons {
+  display: grid;
+
+  grid-template-columns:
+    repeat(3, minmax(0, 1fr));
+
+  gap: 10px;
+
+  width: 100%;
+}
+
+.reminder-button {
+  min-width: 0;
+
+  min-height: 105px;
+
+  display: flex;
+  flex-direction: column;
+
+  align-items: center;
+  justify-content: center;
+
+  gap: 5px;
+
+  padding: 12px 7px;
+
+  border: 1px solid #e0e7e3;
+
+  border-radius: 15px;
+
+  background: #fafcfb;
+
+  color: #34413b;
+
+  font-family: inherit;
+
+  cursor: pointer;
+
+  transition:
+    transform 0.15s ease,
+    border-color 0.15s ease,
+    background 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.reminder-button:hover {
+  transform: translateY(-2px);
+
+  border-color: #b9cec3;
+
+  background: #f5f9f6;
+
+  box-shadow:
+    0 4px 12px rgba(40, 60, 50, 0.07);
+}
+
+.reminder-button:active {
+  transform: scale(0.98);
+}
+
+.reminder-button.active {
+  border-color: #9dbbaa;
+
+  background: #edf6f0;
+
+  box-shadow:
+    0 0 0 2px rgba(100, 150, 120, 0.08);
+}
+
+.reminder-icon {
+  font-size: 27px;
+}
+
+.reminder-button > span:nth-child(2) {
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.reminder-button small {
+  font-size: 10px;
+
+  color: #89958f;
+}
+
+/* =========================================================
+   ACTIVE REMINDER
+   ========================================================= */
+
+.reminder-message {
+  display: flex;
+  align-items: center;
+
+  gap: 12px;
+
+  margin-top: 14px;
+
+  padding: 13px 15px;
+
+  border-radius: 14px;
+
+  background: #f3f8f5;
+
+  border: 1px solid #e0ebe4;
+}
+
+.reminder-message > span {
+  font-size: 25px;
+}
+
+.reminder-message strong {
+  font-size: 14px;
+}
+
+.reminder-message p {
+  margin: 3px 0 0;
+
+  font-size: 12px;
+
+  line-height: 1.4;
+
+  color: #66736c;
+}
+
+/* =========================================================
+   SCHEDULED REMINDERS
+   ========================================================= */
+
+.scheduled-reminders {
+  margin-top: auto;
+
+  padding-top: 16px;
+}
+
+.scheduled-reminders h3 {
+  margin: 0 0 9px;
+
+  font-size: 13px;
+
+  color: #68756f;
+}
+
+.schedule-list {
+  display: grid;
+
+  grid-template-columns:
+    repeat(3, minmax(0, 1fr));
+
+  gap: 8px;
+}
+
+.schedule-item {
+  display: flex;
+  align-items: center;
+
   gap: 7px;
 
-  margin-top: 8px;
+  padding: 9px;
 
-  color: #66727d;
-  font-size: 11px;
+  border-radius: 10px;
+
+  background: #f8faf9;
 }
 
-.status-dot.inactive {
-  background: #c54b4b;
+.schedule-item > span {
+  font-size: 17px;
 }
+
+.schedule-item strong {
+  display: block;
+
+  font-size: 10px;
+}
+
+.schedule-item small {
+  display: block;
+
+  margin-top: 1px;
+
+  font-size: 9px;
+
+  color: #89958f;
+}
+
+/* =========================================================
+   FOOTER
+   ========================================================= */
+
+footer {
+  height: 32px;
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  color: #89958f;
+
+  font-size: 10px;
+}
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+/*
+   Smaller laptop screens:
+   Reduce spacing rather than allowing the page to scroll.
+*/
+
+@media (max-height: 750px) {
+  .topbar {
+    height: 68px;
+  }
+
+  .dashboard {
+    padding-top: 14px;
+    padding-bottom: 14px;
+
+    gap: 16px;
+  }
+
+  .camera-section,
+  .care-section {
+    padding: 16px;
+  }
+
+  .section-heading {
+    margin-bottom: 10px;
+  }
+
+  .person-card {
+    margin-top: 8px;
+    padding: 9px 12px;
+  }
+
+  .person-avatar {
+    width: 36px;
+    height: 36px;
+
+    font-size: 17px;
+  }
+
+  .reminder-button {
+    min-height: 85px;
+  }
+
+  .reminder-icon {
+    font-size: 23px;
+  }
+
+  .scheduled-reminders {
+    padding-top: 10px;
+  }
+}
+
+/*
+   Narrow screens:
+   Keep the three reminder buttons horizontal
+   whenever there is enough room.
+*/
+
+@media (max-width: 850px) {
+  .dashboard {
+    gap: 12px;
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  .camera-section,
+  .care-section {
+    padding: 14px;
+  }
+
+  .topbar {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  .topbar h1 {
+    font-size: 24px;
+  }
+
+  .voice-status {
+    padding: 8px 10px;
+    font-size: 11px;
+  }
+
+  .reminder-button {
+    min-height: 90px;
+  }
+
+  .reminder-button > span:nth-child(2) {
+    font-size: 11px;
+  }
+}
+
+/*
+   Very narrow/mobile layout.
+   Only here do we allow vertical stacking because
+   three columns cannot fit comfortably.
+*/
+
+@media (max-width: 650px) {
+  body {
+    overflow: auto;
+  }
+
+  .app {
+    height: auto;
+    min-height: 100vh;
+  }
+
+  .dashboard {
+    grid-template-columns: 1fr;
+
+    min-height: auto;
+  }
+
+  .camera-section {
+    min-height: 440px;
+  }
+
+  .care-section {
+    min-height: 360px;
+  }
+
+  .voice-status {
+    display: none;
+  }
+}
+
