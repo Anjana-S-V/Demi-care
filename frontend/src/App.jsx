@@ -4,8 +4,18 @@ import "./App.css";
 
 const API_URL = "http://127.0.0.1:8000";
 
+// --------------------------------------------------
+// RECOGNITION SETTINGS
+// --------------------------------------------------
+
 const REQUIRED_MATCHES = 3;
 const ANNOUNCEMENT_COOLDOWN = 30000;
+
+// --------------------------------------------------
+// REMINDER SETTINGS
+// Change these times for the demo.
+// Format: "HH:MM" using 24-hour time.
+// --------------------------------------------------
 
 const reminders = [
   {
@@ -13,30 +23,51 @@ const reminders = [
     icon: "💊",
     title: "Medication",
     message: "It is time to take your medicine.",
+    time: "21:00",
   },
   {
     id: "food",
     icon: "🍽️",
     title: "Food",
     message: "It is time for your meal.",
+    time: "13:00",
   },
   {
     id: "exercise",
     icon: "🚶",
     title: "Exercise",
     message: "It is time for your walk.",
+    time: "17:00",
   },
 ];
 
 function App() {
+  // ------------------------------------------------
+  // CAMERA
+  // ------------------------------------------------
+
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
   const streamRef = useRef(null);
+
+  // ------------------------------------------------
+  // RECOGNITION
+  // ------------------------------------------------
 
   const recognitionBusyRef = useRef(false);
   const recognitionHistoryRef = useRef([]);
   const confirmedPersonRef = useRef(null);
   const lastAnnouncementRef = useRef(null);
+
+  // ------------------------------------------------
+  // REMINDERS
+  // ------------------------------------------------
+
+  const announcedRemindersRef = useRef({});
+
+  // ------------------------------------------------
+  // STATE
+  // ------------------------------------------------
 
   const [cameraStatus, setCameraStatus] =
     useState("Starting camera...");
@@ -51,9 +82,12 @@ function App() {
     confidence: 0,
   });
 
-  // --------------------------------------------------
-  // CAMERA INITIALIZATION
-  // --------------------------------------------------
+  const [currentTime, setCurrentTime] =
+    useState(new Date());
+
+  // ------------------------------------------------
+  // START CAMERA
+  // ------------------------------------------------
 
   useEffect(() => {
     startCamera();
@@ -67,9 +101,9 @@ function App() {
     };
   }, []);
 
-  // --------------------------------------------------
+  // ------------------------------------------------
   // RECOGNITION LOOP
-  // --------------------------------------------------
+  // ------------------------------------------------
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -79,9 +113,22 @@ function App() {
     return () => clearInterval(interval);
   }, []);
 
-  // --------------------------------------------------
+  // ------------------------------------------------
+  // CLOCK + REMINDER LOOP
+  // ------------------------------------------------
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentTime(new Date());
+      checkScheduledReminders();
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  // ------------------------------------------------
   // START CAMERA
-  // --------------------------------------------------
+  // ------------------------------------------------
 
   const startCamera = async () => {
     try {
@@ -126,9 +173,9 @@ function App() {
     }
   };
 
-  // --------------------------------------------------
-  // SEND CAMERA FRAME TO PYTHON
-  // --------------------------------------------------
+  // ------------------------------------------------
+  // RECOGNIZE CURRENT CAMERA FRAME
+  // ------------------------------------------------
 
   const recognizeCurrentFrame = async () => {
     if (recognitionBusyRef.current) {
@@ -207,9 +254,9 @@ function App() {
 
       const result = await response.json();
 
-      // ------------------------------------------------
+      // ----------------------------------------------
       // RECOGNIZED PERSON
-      // ------------------------------------------------
+      // ----------------------------------------------
 
       if (result.recognized) {
         const personKey =
@@ -233,7 +280,6 @@ function App() {
               person === personKey
           ).length;
 
-        // Require multiple consistent detections.
         if (
           confirmedCount >=
           REQUIRED_MATCHES
@@ -265,17 +311,17 @@ function App() {
         }
       }
 
-      // ------------------------------------------------
+      // ----------------------------------------------
       // UNKNOWN PERSON
-      // ------------------------------------------------
+      // ----------------------------------------------
 
       else {
         recognitionHistoryRef.current = [];
 
         setRecognition(
           (previous) => {
-            // Don't immediately remove a confirmed
-            // person because of one noisy frame.
+            // Keep the confirmed identity through
+            // a single noisy frame.
             if (
               previous.status ===
               "recognized"
@@ -310,9 +356,9 @@ function App() {
     }
   };
 
-  // --------------------------------------------------
-  // VOICE: PERSON RECOGNITION
-  // --------------------------------------------------
+  // ------------------------------------------------
+  // PERSON VOICE ANNOUNCEMENT
+  // ------------------------------------------------
 
   const announcePerson = (
     name,
@@ -332,7 +378,6 @@ function App() {
     const previous =
       lastAnnouncementRef.current;
 
-    // Prevent repeated announcements.
     if (
       previous?.text === announcement &&
       now - previous.time <
@@ -362,15 +407,11 @@ function App() {
     );
   };
 
-  // --------------------------------------------------
-  // VOICE: REMINDERS
-  // --------------------------------------------------
+  // ------------------------------------------------
+  // GENERIC VOICE ANNOUNCEMENT
+  // ------------------------------------------------
 
-  const triggerReminder = (
-    reminder
-  ) => {
-    setActiveReminder(reminder);
-
+  const speakReminder = (reminder) => {
     if (
       !("speechSynthesis" in window)
     ) {
@@ -393,9 +434,110 @@ function App() {
     );
   };
 
-  // --------------------------------------------------
-  // RECOGNITION DISPLAY TEXT
-  // --------------------------------------------------
+  // ------------------------------------------------
+  // MANUAL REMINDER
+  // Used by buttons during the demo.
+  // ------------------------------------------------
+
+  const triggerReminder = (
+    reminder
+  ) => {
+    setActiveReminder(reminder);
+
+    speakReminder(reminder);
+  };
+
+  // ------------------------------------------------
+  // SCHEDULED REMINDERS
+  // ------------------------------------------------
+
+  const checkScheduledReminders = () => {
+    const now = new Date();
+
+    const hours =
+      String(now.getHours()).padStart(
+        2,
+        "0"
+      );
+
+    const minutes =
+      String(now.getMinutes()).padStart(
+        2,
+        "0"
+      );
+
+    const currentTimeString =
+      `${hours}:${minutes}`;
+
+    const today =
+      `${now.getFullYear()}-${now.getMonth()}-${now.getDate()}`;
+
+    reminders.forEach((reminder) => {
+      const reminderKey =
+        `${today}-${reminder.id}`;
+
+      if (
+        reminder.time ===
+          currentTimeString &&
+        !announcedRemindersRef.current[
+          reminderKey
+        ]
+      ) {
+        announcedRemindersRef.current[
+          reminderKey
+        ] = true;
+
+        setActiveReminder(reminder);
+
+        speakReminder(reminder);
+      }
+    });
+  };
+
+  // ------------------------------------------------
+  // FORMAT CURRENT TIME
+  // ------------------------------------------------
+
+  const formattedCurrentTime =
+    currentTime.toLocaleTimeString(
+      [],
+      {
+        hour: "2-digit",
+        minute: "2-digit",
+      }
+    );
+
+  // ------------------------------------------------
+  // FORMAT REMINDER TIME
+  // ------------------------------------------------
+
+  const formatReminderTime = (
+    time
+  ) => {
+    const [hours, minutes] =
+      time.split(":");
+
+    const date = new Date();
+
+    date.setHours(
+      Number(hours),
+      Number(minutes),
+      0,
+      0
+    );
+
+    return date.toLocaleTimeString(
+      [],
+      {
+        hour: "numeric",
+        minute: "2-digit",
+      }
+    );
+  };
+
+  // ------------------------------------------------
+  // RECOGNITION DISPLAY
+  // ------------------------------------------------
 
   const getRecognitionTitle = () => {
     if (
@@ -428,7 +570,7 @@ function App() {
         recognition.status ===
         "recognized"
       ) {
-        return recognition.relationship;
+        return `Your ${recognition.relationship}`;
       }
 
       if (
@@ -448,9 +590,9 @@ function App() {
       return "Looking for a familiar person...";
     };
 
-  // --------------------------------------------------
+  // ------------------------------------------------
   // UI
-  // --------------------------------------------------
+  // ------------------------------------------------
 
   return (
     <div className="app">
@@ -516,9 +658,6 @@ function App() {
               playsInline
               muted
             />
-
-            {/* Hidden canvas used to capture
-                frames for Python */}
 
             <canvas
               ref={canvasRef}
@@ -624,10 +763,13 @@ function App() {
               </h2>
 
               <p>
-                Select an activity for a
-                voice reminder
+                Voice reminders
               </p>
 
+            </div>
+
+            <div className="current-time">
+              {formattedCurrentTime}
             </div>
 
           </div>
@@ -661,6 +803,12 @@ function App() {
                     {reminder.title}
                   </span>
 
+                  <small>
+                    {formatReminderTime(
+                      reminder.time
+                    )}
+                  </small>
+
                 </button>
               )
             )}
@@ -690,6 +838,47 @@ function App() {
 
             </div>
           )}
+
+          {/* NEXT REMINDERS */}
+
+          <div className="scheduled-reminders">
+
+            <h3>
+              Scheduled reminders
+            </h3>
+
+            <div className="schedule-list">
+
+              {reminders.map(
+                (reminder) => (
+                  <div
+                    className="schedule-item"
+                    key={reminder.id}
+                  >
+
+                    <span>
+                      {reminder.icon}
+                    </span>
+
+                    <div>
+                      <strong>
+                        {reminder.title}
+                      </strong>
+
+                      <small>
+                        {formatReminderTime(
+                          reminder.time
+                        )}
+                      </small>
+                    </div>
+
+                  </div>
+                )
+              )}
+
+            </div>
+
+          </div>
 
         </section>
 

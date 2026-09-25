@@ -26,3 +26,10 @@ Thumbs.db
 
 # Local/private test data
 data/people/*
+
+recognition/.venv/
+__pycache__/
+*.pyc
+node_modules/
+dist/
+.env
