@@ -1,0 +1,28 @@
+# Dependencies
+node_modules/
+frontend/node_modules/
+
+# Build output
+frontend/dist/
+
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Local development
+.vscode/
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Local/private test data
+data/people/*

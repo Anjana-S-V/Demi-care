@@ -1,0 +1,63 @@
+.camera-container {
+  position: relative;
+  width: 100%;
+  height: 310px;
+  border-radius: 14px;
+  overflow: hidden;
+  background: #18232d;
+}
+
+.camera-video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+
+  /* Mirror the front-facing webcam naturally */
+  transform: scaleX(-1);
+}
+
+.camera-overlay {
+  position: absolute;
+  inset: 0;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  color: white;
+  text-align: center;
+  background: #18232d;
+}
+
+.camera-icon {
+  font-size: 46px;
+  margin-bottom: 10px;
+}
+
+.camera-overlay h3 {
+  margin: 0;
+  font-size: 17px;
+}
+
+.camera-overlay p {
+  margin: 6px 0 0;
+  color: #aeb9c2;
+  font-size: 12px;
+}
+
+.camera-status {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+
+  margin-top: 8px;
+
+  color: #66727d;
+  font-size: 11px;
+}
+
+.status-dot.inactive {
+  background: #c54b4b;
+}

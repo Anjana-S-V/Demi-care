@@ -3,7 +3,7 @@ import json
 import numpy as np
 from pathlib import Path
 
-from face_engine import FaceEngine
+from .face_engine import FaceEngine
 
 
 BASE_DIR = Path(__file__).resolve().parent
@@ -96,4 +96,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-    
