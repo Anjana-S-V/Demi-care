@@ -23,7 +23,7 @@ const reminders = [
     icon: "💊",
     title: "Medication",
     message: "It is time to take your medicine.",
-    time: "21:00",
+    time: "08:03",
   },
   {
     id: "food",
@@ -79,7 +79,6 @@ function App() {
     status: "waiting",
     name: null,
     relationship: null,
-    confidence: 0,
   });
 
   const [currentTime, setCurrentTime] =
@@ -298,8 +297,6 @@ function App() {
             name: result.name,
             relationship:
               result.relationship,
-            confidence:
-              result.confidence,
           });
 
           if (isNewPerson) {
@@ -320,8 +317,6 @@ function App() {
 
         setRecognition(
           (previous) => {
-            // Keep the confirmed identity through
-            // a single noisy frame.
             if (
               previous.status ===
               "recognized"
@@ -333,8 +328,6 @@ function App() {
               status: "unknown",
               name: null,
               relationship: null,
-              confidence:
-                result.confidence,
             };
           }
         );
@@ -435,16 +428,128 @@ function App() {
   };
 
   // ------------------------------------------------
-  // MANUAL REMINDER
-  // Used by buttons during the demo.
+  // GET CURRENT REMINDER STATUS
+  // ------------------------------------------------
+
+  const getReminderStatus = (reminder) => {
+    const now = new Date();
+
+    const currentMinutes =
+      now.getHours() * 60 +
+      now.getMinutes();
+
+    const [hours, minutes] =
+      reminder.time.split(":");
+
+    const reminderMinutes =
+      Number(hours) * 60 +
+      Number(minutes);
+
+    if (
+      currentMinutes ===
+      reminderMinutes
+    ) {
+      return "due";
+    }
+
+    if (
+      currentMinutes <
+      reminderMinutes
+    ) {
+      return "upcoming";
+    }
+
+    return "past";
+  };
+
+  // ------------------------------------------------
+  // MANUAL REMINDER BUTTON
   // ------------------------------------------------
 
   const triggerReminder = (
     reminder
   ) => {
-    setActiveReminder(reminder);
+    const status =
+      getReminderStatus(reminder);
 
-    speakReminder(reminder);
+    // ----------------------------------------------
+    // IT IS CURRENTLY THE SCHEDULED TIME
+    // ----------------------------------------------
+
+    if (status === "due") {
+      setActiveReminder(reminder);
+
+      speakReminder(reminder);
+
+      return;
+    }
+
+    // ----------------------------------------------
+    // BEFORE SCHEDULED TIME
+    // ----------------------------------------------
+
+    if (status === "upcoming") {
+      const message =
+        `${reminder.title} is scheduled for ${formatReminderTime(
+          reminder.time
+        )}. It is not time yet.`;
+
+      setActiveReminder({
+        ...reminder,
+        manualMessage: message,
+        manualStatus: "upcoming",
+      });
+
+      speakCustomMessage(message);
+
+      return;
+    }
+
+    // ----------------------------------------------
+    // AFTER SCHEDULED TIME
+    // ----------------------------------------------
+
+    const message =
+      `${reminder.title} was scheduled for ${formatReminderTime(
+        reminder.time
+      )}. It is not time for ${reminder.title.toLowerCase()} right now.`;
+
+    setActiveReminder({
+      ...reminder,
+      manualMessage: message,
+      manualStatus: "past",
+    });
+
+    speakCustomMessage(message);
+  };
+
+  // ------------------------------------------------
+  // CUSTOM VOICE MESSAGE
+  // ------------------------------------------------
+
+  const speakCustomMessage = (
+    message
+  ) => {
+    if (
+      !("speechSynthesis" in window)
+    ) {
+      return;
+    }
+
+    window.speechSynthesis.cancel();
+
+    const speech =
+      new SpeechSynthesisUtterance(
+        message
+      );
+
+    speech.rate = 0.85;
+    speech.pitch = 1;
+    speech.volume = 1;
+
+    window.speechSynthesis.speak(
+      speech
+    );
   };
 
   // ------------------------------------------------
@@ -736,14 +841,6 @@ function App() {
                 {getRecognitionDescription()}
               </p>
 
-              {recognition.status ===
-                "recognized" && (
-                <small>
-                  Recognition confidence:{" "}
-                  {recognition.confidence}
-                </small>
-              )}
-
             </div>
 
           </div>
@@ -815,7 +912,7 @@ function App() {
 
           </div>
 
-          {/* ACTIVE REMINDER */}
+          {/* ACTIVE / MANUAL REMINDER */}
 
           {activeReminder && (
             <div className="reminder-message">
@@ -831,7 +928,8 @@ function App() {
                 </strong>
 
                 <p>
-                  {activeReminder.message}
+                  {activeReminder.manualMessage ||
+                    activeReminder.message}
                 </p>
 
               </div>
@@ -839,7 +937,7 @@ function App() {
             </div>
           )}
 
-          {/* NEXT REMINDERS */}
+          {/* SCHEDULED REMINDERS */}
 
           <div className="scheduled-reminders">
 
@@ -861,6 +959,7 @@ function App() {
                     </span>
 
                     <div>
+
                       <strong>
                         {reminder.title}
                       </strong>
@@ -870,6 +969,7 @@ function App() {
                           reminder.time
                         )}
                       </small>
+
                     </div>
 
                   </div>
@@ -896,4 +996,3 @@ function App() {
 }
 
 export default App;
-
