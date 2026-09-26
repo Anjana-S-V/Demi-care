@@ -1,4 +1,3 @@
-
 import { useEffect, useRef, useState } from "react";
 import "./App.css";
 
@@ -23,13 +22,15 @@ const reminders = [
     icon: "💊",
     title: "Medication",
     message: "It is time to take your medicine.",
-    time: "08:03",
+    malayalamMessage: "മരുന്ന് കഴിക്കാനുള്ള സമയമായി.",
+    time: "08:32",
   },
   {
     id: "food",
     icon: "🍽️",
     title: "Food",
     message: "It is time for your meal.",
+    malayalamMessage: "ഭക്ഷണം കഴിക്കാനുള്ള സമയമായി.",
     time: "13:00",
   },
   {
@@ -37,9 +38,25 @@ const reminders = [
     icon: "🚶",
     title: "Exercise",
     message: "It is time for your walk.",
+    malayalamMessage: "നടക്കാനുള്ള സമയമായി.",
     time: "17:00",
   },
 ];
+
+// --------------------------------------------------
+// VOICE SETTINGS
+// --------------------------------------------------
+
+const languages = {
+  en: {
+    label: "English",
+    locale: "en-US",
+  },
+  ml: {
+    label: "മലയാളം",
+    locale: "ml-IN",
+  },
+};
 
 function App() {
   // ------------------------------------------------
@@ -84,6 +101,8 @@ function App() {
   const [currentTime, setCurrentTime] =
     useState(new Date());
 
+  const [language, setLanguage] = useState("en");
+
   // ------------------------------------------------
   // START CAMERA
   // ------------------------------------------------
@@ -123,7 +142,7 @@ function App() {
     }, 1000);
 
     return () => clearInterval(interval);
-  }, []);
+  }, [language]);
 
   // ------------------------------------------------
   // START CAMERA
@@ -350,6 +369,39 @@ function App() {
   };
 
   // ------------------------------------------------
+  // GET SELECTED VOICE
+  // ------------------------------------------------
+
+  const getSelectedVoice = () => {
+    if (!("speechSynthesis" in window)) {
+      return null;
+    }
+
+    const voices =
+      window.speechSynthesis.getVoices();
+
+    if (language === "ml") {
+      return (
+        voices.find(
+          (voice) =>
+            voice.lang
+              ?.toLowerCase()
+              .startsWith("ml")
+        ) || null
+      );
+    }
+
+    return (
+      voices.find(
+        (voice) =>
+          voice.lang
+            ?.toLowerCase()
+            .startsWith("en")
+      ) || null
+    );
+  };
+
+  // ------------------------------------------------
   // PERSON VOICE ANNOUNCEMENT
   // ------------------------------------------------
 
@@ -363,8 +415,17 @@ function App() {
       return;
     }
 
-    const announcement =
-      `${name}, your ${relationship}, is here.`;
+    let announcement;
+
+    if (language === "ml") {
+      announcement =
+        `${name}, നിങ്ങളുടെ ${getMalayalamRelationship(
+          relationship
+        )} ഇവിടെ എത്തിയിരിക്കുന്നു.`;
+    } else {
+      announcement =
+        `${name}, your ${relationship}, is here.`;
+    }
 
     const now = Date.now();
 
@@ -391,12 +452,48 @@ function App() {
         announcement
       );
 
+    speech.lang =
+      languages[language].locale;
+
+    const selectedVoice =
+      getSelectedVoice();
+
+    if (selectedVoice) {
+      speech.voice = selectedVoice;
+    }
+
     speech.rate = 0.85;
     speech.pitch = 1;
     speech.volume = 1;
 
     window.speechSynthesis.speak(
       speech
+    );
+  };
+
+  // ------------------------------------------------
+  // MALAYALAM RELATIONSHIP
+  // ------------------------------------------------
+
+  const getMalayalamRelationship = (
+    relationship
+  ) => {
+    const relationshipMap = {
+      Son: "മകൻ",
+      Daughter: "മകൾ",
+      Father: "അച്ഛൻ",
+      Mother: "അമ്മ",
+      Husband: "ഭർത്താവ്",
+      Wife: "ഭാര്യ",
+      Brother: "സഹോദരൻ",
+      Sister: "സഹോദരി",
+      Grandson: "കൊച്ചുമകൻ",
+      Granddaughter: "കൊച്ചുമകൾ",
+    };
+
+    return (
+      relationshipMap[relationship] ||
+      relationship
     );
   };
 
@@ -413,10 +510,25 @@ function App() {
 
     window.speechSynthesis.cancel();
 
+    const message =
+      language === "ml"
+        ? reminder.malayalamMessage
+        : reminder.message;
+
     const speech =
       new SpeechSynthesisUtterance(
-        reminder.message
+        message
       );
+
+    speech.lang =
+      languages[language].locale;
+
+    const selectedVoice =
+      getSelectedVoice();
+
+    if (selectedVoice) {
+      speech.voice = selectedVoice;
+    }
 
     speech.rate = 0.85;
     speech.pitch = 1;
@@ -490,9 +602,15 @@ function App() {
 
     if (status === "upcoming") {
       const message =
-        `${reminder.title} is scheduled for ${formatReminderTime(
-          reminder.time
-        )}. It is not time yet.`;
+        language === "ml"
+          ? `${getMalayalamTitle(
+              reminder.id
+            )} ${formatReminderTime(
+              reminder.time
+            )}-ന് നിശ്ചയിച്ചിരിക്കുന്നു. ഇപ്പോൾ സമയമായിട്ടില്ല.`
+          : `${reminder.title} is scheduled for ${formatReminderTime(
+              reminder.time
+            )}. It is not time yet.`;
 
       setActiveReminder({
         ...reminder,
@@ -510,9 +628,17 @@ function App() {
     // ----------------------------------------------
 
     const message =
-      `${reminder.title} was scheduled for ${formatReminderTime(
-        reminder.time
-      )}. It is not time for ${reminder.title.toLowerCase()} right now.`;
+      language === "ml"
+        ? `${getMalayalamTitle(
+            reminder.id
+          )} ${formatReminderTime(
+            reminder.time
+          )}-നാണ് നിശ്ചയിച്ചിരുന്നത്. ഇപ്പോൾ ${getMalayalamTitle(
+            reminder.id
+          )} ചെയ്യാനുള്ള സമയമല്ല.`
+        : `${reminder.title} was scheduled for ${formatReminderTime(
+            reminder.time
+          )}. It is not time for ${reminder.title.toLowerCase()} right now.`;
 
     setActiveReminder({
       ...reminder,
@@ -521,6 +647,20 @@ function App() {
     });
 
     speakCustomMessage(message);
+  };
+
+  // ------------------------------------------------
+  // MALAYALAM REMINDER TITLES
+  // ------------------------------------------------
+
+  const getMalayalamTitle = (id) => {
+    const titles = {
+      medication: "മരുന്ന് കഴിക്കൽ",
+      food: "ഭക്ഷണം",
+      exercise: "വ്യായാമം",
+    };
+
+    return titles[id] || "";
   };
 
   // ------------------------------------------------
@@ -542,6 +682,16 @@ function App() {
       new SpeechSynthesisUtterance(
         message
       );
+
+    speech.lang =
+      languages[language].locale;
+
+    const selectedVoice =
+      getSelectedVoice();
+
+    if (selectedVoice) {
+      speech.voice = selectedVoice;
+    }
 
     speech.rate = 0.85;
     speech.pitch = 1;
@@ -871,6 +1021,57 @@ function App() {
 
           </div>
 
+          {/* LANGUAGE SELECTOR */}
+
+          <div
+            className="language-selector"
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "8px",
+              marginBottom: "16px",
+            }}
+          >
+            <span
+              style={{
+                fontSize: "14px",
+                fontWeight: 600,
+              }}
+            >
+              Voice:
+            </span>
+
+            <button
+              type="button"
+              onClick={() => {
+                setLanguage("en");
+                window.speechSynthesis?.cancel();
+              }}
+              className={
+                language === "en"
+                  ? "language-button active"
+                  : "language-button"
+              }
+            >
+              English
+            </button>
+
+            <button
+              type="button"
+              onClick={() => {
+                setLanguage("ml");
+                window.speechSynthesis?.cancel();
+              }}
+              className={
+                language === "ml"
+                  ? "language-button active"
+                  : "language-button"
+              }
+            >
+              മലയാളം
+            </button>
+          </div>
+
           {/* REMINDER BUTTONS */}
 
           <div className="reminder-buttons">
@@ -929,7 +1130,11 @@ function App() {
 
                 <p>
                   {activeReminder.manualMessage ||
-                    activeReminder.message}
+                    (
+                      language === "ml"
+                        ? activeReminder.malayalamMessage
+                        : activeReminder.message
+                    )}
                 </p>
 
               </div>
