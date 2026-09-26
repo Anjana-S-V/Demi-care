@@ -1,7 +1,58 @@
+/* =========================================================
+   DEMICARE
+   Calm, accessible, low-clutter interface
+   ========================================================= */
+
+:root {
+  font-family:
+    Inter,
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+
+  color: #263238;
+  background: #f4f7f6;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+
+  --bg: #f4f7f6;
+  --surface: #ffffff;
+  --surface-soft: #f8faf9;
+  --border: #e2e9e6;
+
+  --text: #263238;
+  --text-soft: #66736f;
+  --text-muted: #87938f;
+
+  --primary: #3f7f6d;
+  --primary-dark: #326958;
+  --primary-soft: #e9f4ef;
+
+  --success: #4c9a78;
+  --success-soft: #edf8f2;
+
+  --warning: #c98a45;
+  --warning-soft: #fff6e9;
+
+  --danger: #c96b67;
+  --danger-soft: #fff0ef;
+
+  --shadow-sm:
+    0 2px 8px rgba(37, 55, 48, 0.05);
+
+  --shadow-md:
+    0 8px 24px rgba(37, 55, 48, 0.07);
+
+  --radius-sm: 10px;
+  --radius-md: 16px;
+  --radius-lg: 22px;
+}
 
 /* =========================================================
-   DemiCare
-   Single-screen patient interface
+   RESET
    ========================================================= */
 
 * {
@@ -11,23 +62,22 @@
 html,
 body,
 #root {
-  width: 100%;
-  height: 100%;
   margin: 0;
+  min-width: 320px;
+  min-height: 100%;
 }
 
 body {
-  font-family:
-    Inter,
-    -apple-system,
-    BlinkMacSystemFont,
-    "Segoe UI",
-    sans-serif;
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--text);
+}
 
-  background: #f5f7f6;
-  color: #24302c;
-
-  overflow: hidden;
+button,
+input,
+select,
+textarea {
+  font: inherit;
 }
 
 /* =========================================================
@@ -35,84 +85,87 @@ body {
    ========================================================= */
 
 .app {
-  width: 100%;
-  height: 100vh;
-
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
-
-  overflow: hidden;
 }
 
 /* =========================================================
-   HEADER
+   TOP BAR
    ========================================================= */
 
 .topbar {
-  height: 82px;
-  flex-shrink: 0;
+  width: 100%;
+  min-height: 78px;
 
   display: flex;
   align-items: center;
   justify-content: space-between;
 
-  padding: 0 4vw;
+  padding: 16px 32px;
 
-  background: #ffffff;
-  border-bottom: 1px solid #e3e9e6;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
 }
 
 .topbar h1 {
   margin: 0;
 
-  font-size: 30px;
+  font-size: 26px;
+  line-height: 1.1;
   font-weight: 700;
-  letter-spacing: -0.5px;
+  letter-spacing: -0.4px;
+
+  color: var(--primary-dark);
 }
 
 .topbar p {
-  margin: 3px 0 0;
+  margin: 5px 0 0;
 
-  font-size: 14px;
-  color: #718079;
+  font-size: 13px;
+  line-height: 1.3;
+
+  color: var(--text-soft);
 }
 
 .voice-status {
   display: flex;
   align-items: center;
-  gap: 9px;
+  gap: 8px;
 
-  padding: 10px 15px;
+  padding: 9px 13px;
 
-  border-radius: 20px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
 
-  background: #f1f6f3;
+  background: var(--surface-soft);
+
+  color: var(--text-soft);
 
   font-size: 13px;
   font-weight: 600;
-
-  color: #486158;
+  white-space: nowrap;
 }
 
-/* =========================================================
-   STATUS DOT
-   ========================================================= */
-
 .status-dot {
-  width: 9px;
-  height: 9px;
+  width: 8px;
+  height: 8px;
 
-  display: inline-block;
+  flex: 0 0 8px;
 
   border-radius: 50%;
 
-  background: #42a878;
+  background: var(--success);
 
-  flex-shrink: 0;
+  box-shadow:
+    0 0 0 3px rgba(76, 154, 120, 0.12);
 }
 
 .status-dot.inactive {
-  background: #c1c9c5;
+  background: var(--danger);
+
+  box-shadow:
+    0 0 0 3px rgba(201, 107, 103, 0.12);
 }
 
 /* =========================================================
@@ -120,50 +173,42 @@ body {
    ========================================================= */
 
 .dashboard {
-  flex: 1;
-  min-height: 0;
+  width: min(1180px, calc(100% - 48px));
 
-  width: 100%;
+  margin: 24px auto;
 
   display: grid;
   grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
 
-  gap: 24px;
+  gap: 20px;
 
-  padding: 24px 4vw;
+  flex: 1;
 }
 
 /* =========================================================
-   SHARED SECTION
+   SECTIONS
    ========================================================= */
 
 .camera-section,
 .care-section {
   min-width: 0;
-  min-height: 0;
-
-  display: flex;
-  flex-direction: column;
-
-  background: #ffffff;
-
-  border: 1px solid #e4eae7;
-  border-radius: 20px;
 
   padding: 22px;
 
-  box-shadow:
-    0 4px 18px rgba(40, 60, 50, 0.05);
-}
+  background: var(--surface);
 
-/* =========================================================
-   SECTION HEADING
-   ========================================================= */
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+
+  box-shadow: var(--shadow-sm);
+}
 
 .section-heading {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
+
+  gap: 16px;
 
   margin-bottom: 16px;
 }
@@ -171,28 +216,42 @@ body {
 .section-heading h2 {
   margin: 0;
 
-  font-size: 20px;
+  font-size: 19px;
+  line-height: 1.2;
   font-weight: 700;
+
+  letter-spacing: -0.2px;
+
+  color: var(--text);
 }
 
 .section-heading p {
-  margin: 4px 0 0;
+  margin: 5px 0 0;
 
   font-size: 13px;
-  color: #7a8781;
+  line-height: 1.35;
+
+  color: var(--text-soft);
 }
 
 .live-badge {
-  padding: 7px 11px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
 
-  border-radius: 14px;
+  padding: 6px 9px;
 
-  background: #f4eeee;
+  border-radius: 999px;
 
-  color: #a85c5c;
+  background: var(--success-soft);
+
+  color: var(--success);
 
   font-size: 11px;
   font-weight: 700;
+  letter-spacing: 0.4px;
+
+  white-space: nowrap;
 }
 
 /* =========================================================
@@ -204,30 +263,28 @@ body {
 
   width: 100%;
 
-  flex: 1;
-  min-height: 0;
+  aspect-ratio: 16 / 10;
 
   overflow: hidden;
 
-  border-radius: 15px;
+  border-radius: 16px;
 
-  background: #202624;
+  background: #1d2523;
+
+  border: 1px solid var(--border);
 }
 
 .camera-video {
+  display: block;
+
   width: 100%;
   height: 100%;
 
-  display: block;
-
   object-fit: cover;
-
-  transform: scaleX(-1);
 }
 
 .camera-overlay {
   position: absolute;
-
   inset: 0;
 
   display: flex;
@@ -236,46 +293,47 @@ body {
   align-items: center;
   justify-content: center;
 
+  padding: 24px;
+
   text-align: center;
 
-  background: #eef2f0;
+  background: rgba(29, 37, 35, 0.92);
+
+  color: #ffffff;
 }
 
 .camera-icon {
-  font-size: 38px;
-
   margin-bottom: 8px;
+
+  font-size: 30px;
 }
 
 .camera-overlay h3 {
   margin: 0;
 
   font-size: 16px;
+  font-weight: 600;
 }
 
 .camera-overlay p {
-  margin: 5px 0 0;
-
-  color: #7b8782;
+  margin: 6px 0 0;
 
   font-size: 13px;
-}
 
-/* =========================================================
-   CAMERA STATUS
-   ========================================================= */
+  color: rgba(255, 255, 255, 0.72);
+}
 
 .camera-status {
   display: flex;
   align-items: center;
-
-  gap: 8px;
+  gap: 9px;
 
   margin-top: 10px;
 
   font-size: 12px;
+  font-weight: 600;
 
-  color: #69766f;
+  color: var(--text-soft);
 }
 
 /* =========================================================
@@ -286,22 +344,22 @@ body {
   display: flex;
   align-items: center;
 
-  gap: 13px;
+  gap: 14px;
 
-  margin-top: 12px;
+  margin-top: 16px;
+  padding: 15px 16px;
 
-  padding: 13px 15px;
+  background: var(--surface-soft);
 
+  border: 1px solid var(--border);
   border-radius: 14px;
-
-  background: #f6f9f7;
 }
 
 .person-avatar {
-  width: 43px;
-  height: 43px;
+  width: 48px;
+  height: 48px;
 
-  flex-shrink: 0;
+  flex: 0 0 48px;
 
   display: flex;
   align-items: center;
@@ -309,9 +367,9 @@ body {
 
   border-radius: 50%;
 
-  background: #e4eee8;
+  background: var(--primary-soft);
 
-  font-size: 20px;
+  font-size: 23px;
 }
 
 .person-info {
@@ -321,58 +379,116 @@ body {
 .recognized-label {
   display: block;
 
-  margin-bottom: 2px;
-
-  color: #7c8983;
+  margin-bottom: 3px;
 
   font-size: 10px;
-  font-weight: 700;
+  line-height: 1.2;
 
+  font-weight: 700;
+  letter-spacing: 0.7px;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+
+  color: var(--primary);
 }
 
 .person-info h3 {
   margin: 0;
 
   font-size: 17px;
+  line-height: 1.25;
+  font-weight: 700;
 
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  color: var(--text);
 }
 
 .person-info p {
-  margin: 2px 0 0;
-
-  color: #6d7973;
+  margin: 4px 0 0;
 
   font-size: 12px;
-}
+  line-height: 1.35;
 
-.person-info small {
-  display: block;
-
-  margin-top: 3px;
-
-  color: #89958f;
-
-  font-size: 10px;
+  color: var(--text-soft);
 }
 
 /* =========================================================
-   CARE SECTION
+   CURRENT TIME
    ========================================================= */
 
-.care-section {
-  justify-content: flex-start;
+.current-time {
+  flex: 0 0 auto;
+
+  padding: 7px 10px;
+
+  border-radius: 9px;
+
+  background: var(--surface-soft);
+  border: 1px solid var(--border);
+
+  color: var(--text);
+
+  font-size: 13px;
+  font-weight: 700;
+
+  white-space: nowrap;
 }
 
-.current-time {
-  font-size: 14px;
+/* =========================================================
+   LANGUAGE SELECTOR
+   ========================================================= */
+
+.language-selector {
+  padding: 10px 12px;
+
+  border: 1px solid var(--border);
+  border-radius: 12px;
+
+  background: var(--surface-soft);
+}
+
+.language-selector > span {
+  color: var(--text-soft);
+}
+
+.language-button {
+  min-height: 32px;
+
+  padding: 5px 11px;
+
+  border: 1px solid var(--border);
+  border-radius: 8px;
+
+  background: var(--surface);
+
+  color: var(--text-soft);
+
+  cursor: pointer;
+
+  font-size: 12px;
   font-weight: 600;
 
-  color: #68766f;
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease,
+    color 0.15s ease,
+    transform 0.15s ease;
+}
+
+.language-button:hover {
+  border-color: #c7d6d0;
+
+  color: var(--primary-dark);
+}
+
+.language-button:active {
+  transform: translateY(1px);
+}
+
+.language-button.active {
+  border-color: var(--primary);
+
+  background: var(--primary);
+
+  color: #ffffff;
 }
 
 /* =========================================================
@@ -381,19 +497,15 @@ body {
 
 .reminder-buttons {
   display: grid;
-
-  grid-template-columns:
-    repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
 
   gap: 10px;
-
-  width: 100%;
 }
 
 .reminder-button {
   min-width: 0;
 
-  min-height: 105px;
+  min-height: 112px;
 
   display: flex;
   flex-direction: column;
@@ -401,19 +513,16 @@ body {
   align-items: center;
   justify-content: center;
 
-  gap: 5px;
+  gap: 6px;
 
-  padding: 12px 7px;
+  padding: 13px 9px;
 
-  border: 1px solid #e0e7e3;
-
+  border: 1px solid var(--border);
   border-radius: 15px;
 
-  background: #fafcfb;
+  background: var(--surface);
 
-  color: #34413b;
-
-  font-family: inherit;
+  color: var(--text);
 
   cursor: pointer;
 
@@ -425,81 +534,123 @@ body {
 }
 
 .reminder-button:hover {
-  transform: translateY(-2px);
+  transform: translateY(-1px);
 
-  border-color: #b9cec3;
+  border-color: #c7d6d0;
 
-  background: #f5f9f6;
+  background: var(--surface-soft);
 
-  box-shadow:
-    0 4px 12px rgba(40, 60, 50, 0.07);
+  box-shadow: var(--shadow-sm);
 }
 
 .reminder-button:active {
-  transform: scale(0.98);
+  transform: translateY(0);
+}
+
+.reminder-button:focus-visible,
+.language-button:focus-visible {
+  outline: 3px solid rgba(63, 127, 109, 0.2);
+  outline-offset: 2px;
 }
 
 .reminder-button.active {
-  border-color: #9dbbaa;
+  border-color: var(--primary);
 
-  background: #edf6f0;
+  background: var(--primary-soft);
 
   box-shadow:
-    0 0 0 2px rgba(100, 150, 120, 0.08);
+    inset 0 0 0 1px rgba(63, 127, 109, 0.08);
 }
 
 .reminder-icon {
-  font-size: 27px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 38px;
+  height: 38px;
+
+  border-radius: 11px;
+
+  background: var(--surface-soft);
+
+  font-size: 21px;
 }
 
-.reminder-button > span:nth-child(2) {
+.reminder-button.active .reminder-icon {
+  background: #ffffff;
+}
+
+.reminder-button > span:not(.reminder-icon) {
   font-size: 13px;
+  line-height: 1.2;
+
   font-weight: 700;
 }
 
 .reminder-button small {
-  font-size: 10px;
+  font-size: 11px;
+  line-height: 1.2;
 
-  color: #89958f;
+  color: var(--text-muted);
+}
+
+.reminder-button.active small {
+  color: var(--primary-dark);
 }
 
 /* =========================================================
-   ACTIVE REMINDER
+   ACTIVE REMINDER MESSAGE
    ========================================================= */
 
 .reminder-message {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
 
   gap: 12px;
 
   margin-top: 14px;
+  padding: 14px 15px;
 
-  padding: 13px 15px;
-
+  border: 1px solid #d9e9e2;
   border-radius: 14px;
 
-  background: #f3f8f5;
-
-  border: 1px solid #e0ebe4;
+  background: var(--primary-soft);
 }
 
 .reminder-message > span {
-  font-size: 25px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 36px;
+  height: 36px;
+
+  flex: 0 0 36px;
+
+  border-radius: 10px;
+
+  background: #ffffff;
+
+  font-size: 19px;
 }
 
 .reminder-message strong {
-  font-size: 14px;
+  display: block;
+
+  font-size: 13px;
+  line-height: 1.25;
+
+  color: var(--primary-dark);
 }
 
 .reminder-message p {
-  margin: 3px 0 0;
+  margin: 4px 0 0;
 
   font-size: 12px;
+  line-height: 1.45;
 
-  line-height: 1.4;
-
-  color: #66736c;
+  color: var(--text-soft);
 }
 
 /* =========================================================
@@ -507,59 +658,78 @@ body {
    ========================================================= */
 
 .scheduled-reminders {
-  margin-top: auto;
-
-  padding-top: 16px;
+  margin-top: 16px;
 }
 
 .scheduled-reminders h3 {
   margin: 0 0 9px;
 
-  font-size: 13px;
+  font-size: 12px;
+  line-height: 1.2;
 
-  color: #68756f;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+
+  color: var(--text-muted);
 }
 
 .schedule-list {
   display: grid;
-
-  grid-template-columns:
-    repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
 
   gap: 8px;
 }
 
 .schedule-item {
+  min-width: 0;
+
   display: flex;
   align-items: center;
 
-  gap: 7px;
+  gap: 8px;
 
-  padding: 9px;
+  padding: 9px 10px;
 
-  border-radius: 10px;
+  border: 1px solid var(--border);
+  border-radius: 11px;
 
-  background: #f8faf9;
+  background: var(--surface-soft);
 }
 
 .schedule-item > span {
   font-size: 17px;
+  line-height: 1;
+}
+
+.schedule-item > div {
+  min-width: 0;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 2px;
 }
 
 .schedule-item strong {
-  display: block;
+  overflow: hidden;
 
-  font-size: 10px;
+  font-size: 11px;
+  line-height: 1.2;
+
+  font-weight: 700;
+
+  color: var(--text);
+
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .schedule-item small {
-  display: block;
+  font-size: 10px;
+  line-height: 1.2;
 
-  margin-top: 1px;
-
-  font-size: 9px;
-
-  color: #89958f;
+  color: var(--text-muted);
 }
 
 /* =========================================================
@@ -567,146 +737,208 @@ body {
    ========================================================= */
 
 footer {
-  height: 32px;
-  flex-shrink: 0;
+  width: 100%;
 
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  padding: 10px 24px 16px;
 
-  color: #89958f;
+  text-align: center;
 
-  font-size: 10px;
+  font-size: 11px;
+
+  color: var(--text-muted);
 }
 
 /* =========================================================
-   RESPONSIVE
+   TABLET
    ========================================================= */
 
-/*
-   Smaller laptop screens:
-   Reduce spacing rather than allowing the page to scroll.
-*/
-
-@media (max-height: 750px) {
-  .topbar {
-    height: 68px;
-  }
-
+@media (max-width: 900px) {
   .dashboard {
-    padding-top: 14px;
-    padding-bottom: 14px;
+    width: min(720px, calc(100% - 32px));
 
-    gap: 16px;
+    grid-template-columns: 1fr;
+
+    margin: 16px auto;
   }
 
-  .camera-section,
-  .care-section {
-    padding: 16px;
-  }
-
-  .section-heading {
-    margin-bottom: 10px;
-  }
-
-  .person-card {
-    margin-top: 8px;
-    padding: 9px 12px;
-  }
-
-  .person-avatar {
-    width: 36px;
-    height: 36px;
-
-    font-size: 17px;
-  }
-
-  .reminder-button {
-    min-height: 85px;
-  }
-
-  .reminder-icon {
-    font-size: 23px;
-  }
-
-  .scheduled-reminders {
-    padding-top: 10px;
+  .camera-container {
+    aspect-ratio: 16 / 9;
   }
 }
 
-/*
-   Narrow screens:
-   Keep the three reminder buttons horizontal
-   whenever there is enough room.
-*/
+/* =========================================================
+   SMALL SCREENS
+   ========================================================= */
 
-@media (max-width: 850px) {
-  .dashboard {
-    gap: 12px;
-    padding-left: 16px;
-    padding-right: 16px;
-  }
-
-  .camera-section,
-  .care-section {
-    padding: 14px;
-  }
-
+@media (max-width: 560px) {
   .topbar {
-    padding-left: 16px;
-    padding-right: 16px;
+    min-height: auto;
+
+    padding: 14px 16px;
+
+    gap: 12px;
   }
 
   .topbar h1 {
-    font-size: 24px;
+    font-size: 22px;
+  }
+
+  .topbar p {
+    font-size: 11px;
   }
 
   .voice-status {
-    padding: 8px 10px;
+    padding: 7px 9px;
+
     font-size: 11px;
   }
 
-  .reminder-button {
-    min-height: 90px;
-  }
-
-  .reminder-button > span:nth-child(2) {
-    font-size: 11px;
-  }
-}
-
-/*
-   Very narrow/mobile layout.
-   Only here do we allow vertical stacking because
-   three columns cannot fit comfortably.
-*/
-
-@media (max-width: 650px) {
-  body {
-    overflow: auto;
-  }
-
-  .app {
-    height: auto;
-    min-height: 100vh;
+  .voice-status .status-dot {
+    width: 7px;
+    height: 7px;
+    flex-basis: 7px;
   }
 
   .dashboard {
-    grid-template-columns: 1fr;
+    width: calc(100% - 20px);
 
-    min-height: auto;
+    margin: 10px auto;
+
+    gap: 12px;
   }
 
-  .camera-section {
-    min-height: 440px;
-  }
-
+  .camera-section,
   .care-section {
-    min-height: 360px;
+    padding: 15px;
+
+    border-radius: 17px;
   }
 
-  .voice-status {
-    display: none;
+  .section-heading {
+    margin-bottom: 12px;
+  }
+
+  .section-heading h2 {
+    font-size: 17px;
+  }
+
+  .section-heading p {
+    font-size: 11px;
+  }
+
+  .live-badge {
+    padding: 5px 7px;
+
+    font-size: 9px;
+  }
+
+  .camera-container {
+    aspect-ratio: 4 / 3;
+
+    border-radius: 13px;
+  }
+
+  .person-card {
+    padding: 12px;
+
+    margin-top: 12px;
+  }
+
+  .person-avatar {
+    width: 42px;
+    height: 42px;
+    flex-basis: 42px;
+
+    font-size: 20px;
+  }
+
+  .person-info h3 {
+    font-size: 15px;
+  }
+
+  .person-info p {
+    font-size: 11px;
+  }
+
+  .current-time {
+    padding: 6px 8px;
+
+    font-size: 11px;
+  }
+
+  .language-selector {
+    flex-wrap: wrap;
+
+    margin-bottom: 12px !important;
+  }
+
+  .reminder-buttons {
+    gap: 7px;
+  }
+
+  .reminder-button {
+    min-height: 94px;
+
+    padding: 9px 5px;
+
+    border-radius: 12px;
+  }
+
+  .reminder-icon {
+    width: 32px;
+    height: 32px;
+
+    font-size: 18px;
+  }
+
+  .reminder-button > span:not(.reminder-icon) {
+    font-size: 11px;
+  }
+
+  .reminder-button small {
+    font-size: 9px;
+  }
+
+  .schedule-list {
+    gap: 6px;
+  }
+
+  .schedule-item {
+    padding: 7px 6px;
+
+    gap: 5px;
+  }
+
+  .schedule-item > span {
+    font-size: 14px;
+  }
+
+  .schedule-item strong {
+    font-size: 9px;
+  }
+
+  .schedule-item small {
+    font-size: 8px;
+  }
+
+  footer {
+    padding: 7px 12px 12px;
+
+    font-size: 9px;
   }
 }
 
+/* =========================================================
+   REDUCED MOTION
+   ========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
